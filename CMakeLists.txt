@@ -4,3 +4,5 @@ project(Ticket_System)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Ticket_System main.cpp)
+
+add_compile_options(-O2)
