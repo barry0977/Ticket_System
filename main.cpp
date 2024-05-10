@@ -2,8 +2,8 @@
 #include <fstream>
 #include <string>
 #include <cstring>
-const int M=4;
-const int L=4;
+const int M=200;
+const int L=200;
 template<int len,class VALUE>//len表示index字符数组的长度，VALUE表示值
 class BPTree
 {
@@ -721,7 +721,6 @@ public:
     }
 };
 int main() {
-    freopen("in.txt","r",stdin);
     int n,value;
     std::cin>>n;
     std::string mode;
