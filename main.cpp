@@ -4,6 +4,7 @@
 #include <cstring>
 const int M=200;
 const int L=200;
+
 template<int len,class VALUE>//len表示index字符数组的长度，VALUE表示值
 class BPTree
 {
@@ -94,45 +95,101 @@ private:
     template<class T>
     int Write(T& tmp)
     {
-        file.open(file_name, std::ios::app | std::ios::binary);
+        file.seekp(0,std::ios::end);
         int index = file.tellp();
         file.write(reinterpret_cast<char*>(&tmp), sizeof(T));
-        file.close();
         return index;
     }
 
     void get_first(firstnode& tmp)
     {
-        file.open(file_name, std::ios::in | std::ios::out | std::ios::binary);
-        file.seekg(0);
+        file.seekg(0,std::ios::beg);
         file.read(reinterpret_cast<char*>(&tmp), sizeof(firstnode));
-        file.close();
     }
 
     void write_first(firstnode& tmp) {
-        file.open(file_name, std::ios::in | std::ios::out | std::ios::binary);
-        file.seekp(0);
+        file.seekp(0,std::ios::beg);
         file.write(reinterpret_cast<char*>(&tmp), sizeof(firstnode));
-        file.close();
     }
 
     template<class T>
     void read_inf(T& tmp,int index)
     {
-        file.open(file_name, std::ios::in | std::ios::out | std::ios::binary);
-        file.seekg(index);
+        file.seekg(index,std::ios::beg);
         file.read(reinterpret_cast<char*>(&tmp), sizeof(T));
-        file.close();
     }
 
     template<class T>
     void write_inf(T& tmp,int index)
     {
-        file.open(file_name, std::ios::in | std::ios::out | std::ios::binary);
-        file.seekp(index);
+        file.seekp(index,std::ios::beg);
         file.write(reinterpret_cast<char*>(&tmp), sizeof(T));
-        file.close();
     }
+    //bufferpool
+//    struct Node
+//    {
+//        node elem;
+//        int address;
+//        int timepin=0;
+//        bool exist=false;
+//    } list[200];
+//
+//    int emptynum=200;
+//    node ask(int location)
+//    {
+//        int pos=-1;
+//        for(int i=0;i<200;i++)
+//        {
+//            if(list[i].exist)
+//            {
+//                if(list[i].address==location)
+//                {
+//                    list[i].timepin=0;
+//                    pos=i;
+//                }
+//                else
+//                {
+//                    list[i].timepin++;
+//                }
+//            }
+//        }
+//        if(pos>=0)//如果本来就在里面
+//        {
+//            return list[pos].elem;
+//        }
+//        else
+//        {
+//            if(emptynum>0)
+//            {
+//                for(int i=0;i<200;i++)
+//                {
+//                    if(!list[i].exist)
+//                    {
+//                        list[i].timepin=0;
+//                        list[i].exist=true;
+//                        read_inf<node>(list[i].elem,location);
+//                        return list[i].elem;
+//                    }
+//                }
+//            }
+//            else//没有空余位置
+//            {
+//                int mini=0,order;
+//                for(int i=0;i<200;i++)
+//                {
+//                    if(list[i].timepin>=mini)
+//                    {
+//                        mini=list[i].timepin;
+//                        order=i;
+//                    }
+//                }
+//                write_inf<node>(list[order].elem,list[order].address);
+//                list[order].timepin=0;
+//                read_inf<node>(list[order].elem,location);
+//                return list[order].elem;
+//            }
+//        }
+//    }
 
     void divide_database(const int cur_index,const int order,const int data_index)//分裂数据块,order表示data_index在cur_index数组中的下标
     {
@@ -282,7 +339,6 @@ private:
         read_inf<node>(cur,cur_index);//要重新读一下
         if(cur_index==first.rootindex&&cur.keynum>M)//如果是根结点并且超过数量
         {
-            node useless;
             divide_node(-1,-1,cur_index);
         }
     }
@@ -526,7 +582,7 @@ private:
                 {
                     next.keylist[next.keynum]=cur.keylist[place];
                     next.location[next.keynum+1]=right.location[0];
-                    for(int i=0;i<right.keynum-1;i++)
+                    for(int i=0;i<right.keynum;i++)
                     {
                         next.keylist[next.keynum+1+i]=right.keylist[i];
                         next.location[next.keynum+2+i]=right.location[i+1];
@@ -682,6 +738,7 @@ public:
             file.open(file_name);
             file.write(reinterpret_cast<char*>(&first), sizeof(firstnode));
             file.close();//要先关掉
+            file.open(file_name, std::ios::in | std::ios::out | std::ios::binary);
             database head;
             head.next=-1;
             first.headindex= Write<database>(head);//如果是新开的文件，先写入首个数据块和根结点
@@ -691,6 +748,11 @@ public:
             first.rootindex= Write<node>(root);
             write_first(first);
         }
+//        file.close();
+    }
+
+    ~BPTree()
+    {
         file.close();
     }
 
@@ -698,8 +760,6 @@ public:
     {
         element obj(name,number);
         get_first(first);
-//        node root;
-//        read_inf<node>(root,first.rootindex);
         insert(first.rootindex,obj);
     }
 
@@ -707,8 +767,6 @@ public:
     {
         element obj(name,number);
         get_first(first);
-//        node root;
-//        read_inf<node>(root,first.rootindex);
         _delete(first.rootindex,obj);
     }
 
@@ -719,7 +777,6 @@ public:
     }
 };
 int main() {
-//    freopen("in.txt","r",stdin);
     int n,value;
     std::cin>>n;
     std::string mode;
@@ -754,7 +811,6 @@ int main() {
             strcpy(tmp, index.c_str());
             bpTree.Find(tmp);
         }
-//        std::cout<<"i:"<<i<<std::endl;
     }
     return 0;
 }
