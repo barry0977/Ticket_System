@@ -134,7 +134,7 @@ private:
         file.close();
     }
 
-    void divide_database(int cur_index,int order,int data_index)//分裂数据块,order表示data_index在cur_index数组中的下标
+    void divide_database(const int cur_index,const int order,const int data_index)//分裂数据块,order表示data_index在cur_index数组中的下标
     {
         database tmp;
         read_inf<database>(tmp,data_index);
@@ -168,7 +168,7 @@ private:
         write_inf<database>(new1,data_index);
     }
 
-    void divide_node(int fa_index,int order,int cur_index)
+    void divide_node(const int fa_index,const int order,const int cur_index)
     {
         node cur;
         read_inf<node>(cur,cur_index);
@@ -218,7 +218,7 @@ private:
         }
     }
 
-    void insert(int cur_index,element& obj)
+    void insert(const int cur_index,element obj)
     {
         node cur;
         read_inf<node>(cur,cur_index);
@@ -287,7 +287,7 @@ private:
         }
     }
 
-    void _delete(int cur_index,element& obj)
+    void _delete(const int cur_index,element obj)
     {
         node cur;
         read_inf<node>(cur,cur_index);
@@ -451,8 +451,6 @@ private:
         else//不是叶结点
         {
             int next_index=cur.location[place];
-//            node next;
-//            read_inf<node>(next,next_index);
             _delete(next_index,obj);//递归后next已经被修改
             node next;
             read_inf<node>(next,next_index);
@@ -465,7 +463,7 @@ private:
                     read_inf<node>(left,cur.location[place-1]);
                     if(left.keynum>(M+1)/2)//有多余的孩子
                     {
-                        for(int i=next.keynum-1;i>=0;i++)
+                        for(int i=next.keynum-1;i>=0;i--)
                         {
                             next.keylist[i+1]=next.keylist[i];
                             next.location[i+2]=next.location[i+1];
@@ -553,7 +551,7 @@ private:
         }
     }
 
-    void find(int cur_index,char obj[])
+    void find(const int cur_index,char obj[])
     {
         node cur;
         read_inf<node>(cur,cur_index);
@@ -721,6 +719,7 @@ public:
     }
 };
 int main() {
+//    freopen("in.txt","r",stdin);
     int n,value;
     std::cin>>n;
     std::string mode;
@@ -755,6 +754,7 @@ int main() {
             strcpy(tmp, index.c_str());
             bpTree.Find(tmp);
         }
+//        std::cout<<"i:"<<i<<std::endl;
     }
     return 0;
 }
