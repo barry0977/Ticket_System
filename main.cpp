@@ -4,7 +4,8 @@
 #include <cstring>
 const int M = 200;
 const int L = 200;
-const int poolsize = 500;
+const int poolsize = 100;
+//add_compile_options(-O2)
 template<int len, class VALUE>//len表示index字符数组的长度，VALUE表示值
 class BPTree
 {
