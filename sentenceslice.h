@@ -1,0 +1,8 @@
+//
+// Created by 24115 on 2024/5/26.
+//
+
+#ifndef CODE_SENTENCESLICE_H
+#define CODE_SENTENCESLICE_H
+
+#endif //CODE_SENTENCESLICE_H
