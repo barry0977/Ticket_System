@@ -16,7 +16,7 @@ int main()
     {
 //        std::cout<<"enter\n";
         std::getline(std::cin,input);
-        std::vector<std::string> token= readtokens(input);
+        sjtu::vector<std::string> token= readtokens(input);
         int l=token.size();
 //        std::cout<<"|:"<<l<<"\n";
         std::string timestamp=token[0];

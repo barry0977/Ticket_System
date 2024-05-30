@@ -8,9 +8,9 @@
 #include <iostream>
 #include "myvector.h"
 #include <vector>
-std::vector<std::string> readtokens(const std::string& str)//把读入的语句按空格切片
+sjtu::vector<std::string> readtokens(const std::string& str)//把读入的语句按空格切片
 {
-    std::vector<std::string> result;
+    sjtu::vector<std::string> result;
     std::istringstream iss(str);
     std::string token;
     while (iss >> token)
@@ -20,9 +20,9 @@ std::vector<std::string> readtokens(const std::string& str)//把读入的语句�
     return result;
 }
 
-std::vector<std::string> curstring(const std::string& str)//把字符串按照|切片
+sjtu::vector<std::string> cutstring(const std::string& str)//把字符串按照|切片
 {
-    std::vector<std::string> subStrings;
+    sjtu::vector<std::string> subStrings;
     std::stringstream ss(str);
     std::string token;
     while (std::getline(ss, token, '|'))
@@ -50,11 +50,11 @@ int stringToInteger(std::string str)
     return n;
 }
 
-int starttime(std::string& str)
+int timetrans(std::string& str)
 {
     int h,m;
     h= stringToInteger(str.substr(0,2));
-    m= stringToInteger(str.substr(2,2));
+    m= stringToInteger(str.substr(3,2));
     return h*60+m;
 }
 
@@ -76,5 +76,46 @@ int daytrans(std::string& str)
         ans+=(str[3]-'0')*10+str[4]-'0';
     }
     return ans;
+}
+
+std::string dayshow(int d)
+{
+    std::string s="";
+    if(d>=1&&d<=30)
+    {
+        int x=d/10,y=d%10;
+        s+="06-";
+        s+='0'+x;
+        s+='0'+y;
+    }
+    else if(d>=31&&d<=61)
+    {
+        d-=30;
+        int x=d/10,y=d%10;
+        s+="07-";
+        s+='0'+x;
+        s+='0'+y;
+    }
+    else
+    {
+        d-=61;
+        int x=d/10,y=d%10;
+        s+="08-";
+        s+='0'+x;
+        s+='0'+y;
+    }
+    return s;
+}
+
+std::string timeshow(int t)
+{
+    std::string s="";
+    int h=t/60,m=t%60;
+    s+='0'+h/10;
+    s+='0'+h%10;
+    s+=':';
+    s+='0'+m/10;
+    s+='0'+m%10;
+    return s;
 }
 #endif //CODE_SENTENCESLICE_H
