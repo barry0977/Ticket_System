@@ -71,10 +71,6 @@ namespace sjtu
         private:
             int order;
             T* begin;
-            /**
-             * TODO add data members
-             *   just add whatever you want.
-             */
         public:
             friend class vector<T>;
             iterator(const int& num, T* ptr)
@@ -120,43 +116,28 @@ namespace sjtu
                 order -= n;
                 return *this;
             }
-            /**
-             * TODO iter++
-             */
             iterator operator++(int)
             {
                 iterator tmp = *this;
                 order++;
                 return tmp;
             }
-            /**
-             * TODO ++iter
-             */
             iterator& operator++()
             {
                 order++;
                 return *this;
             }
-            /**
-             * TODO iter--
-             */
             iterator operator--(int)
             {
                 iterator tmp = *this;
                 order--;
                 return tmp;
             }
-            /**
-             * TODO --iter
-             */
             iterator& operator--()
             {
                 order++;
                 return *this;
             }
-            /**
-             * TODO *it
-             */
             T& operator*() const
             {
                 return begin[order];
@@ -245,43 +226,28 @@ namespace sjtu
                 order -= n;
                 return *this;
             }
-            /**
-             * TODO iter++
-             */
             const_iterator operator++(int)
             {
                 iterator tmp = *this;
                 order++;
                 return tmp;
             }
-            /**
-             * TODO ++iter
-             */
             const_iterator& operator++()
             {
                 order++;
                 return *this;
             }
-            /**
-             * TODO iter--
-             */
             const_iterator operator--(int)
             {
                 const_iterator tmp = *this;
                 order--;
                 return tmp;
             }
-            /**
-             * TODO --iter
-             */
             const_iterator& operator--()
             {
                 order++;
                 return *this;
             }
-            /**
-             * TODO *it
-             */
             const T& operator*() const
             {
                 return begin[order];
@@ -309,10 +275,6 @@ namespace sjtu
                 return begin + order != rhs.begin + rhs.order;
             }
         };
-        /**
-         * TODO Constructs
-         * At least two: default constructor, copy constructor
-         */
         vector()
         {
             data = alloc.allocate(10);
@@ -329,20 +291,19 @@ namespace sjtu
                 new(data + i)T(other[i]);
             }
         }
-        /**
-         * TODO Destructor
-         */
         ~vector()
         {
+//            std::cout<<"enter ~"<<std::endl;
+//            std::cout<<"length:"<<length<<std::endl;
+//            std::cout<<data<<std::endl;
             for (int i = 0; i < length; i++)
             {
+//                std::cout<<data[i]<<std::endl;
                 data[i].~T();
+//                std::cout<<"ith:"<<i<<std::endl;
             }
             alloc.deallocate(data, maxsize);
         }
-        /**
-         * TODO Assignment operator
-         */
         vector& operator=(const vector& other)
         {
             if (this != &other)
