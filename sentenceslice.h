@@ -8,9 +8,9 @@
 #include <iostream>
 #include "myvector.h"
 #include <vector>
-sjtu::vector<std::string> readtokens(const std::string& str)//把读入的语句按空格切片
+std::vector<std::string> readtokens(const std::string& str)//把读入的语句按空格切片
 {
-    sjtu::vector<std::string> result;
+    std::vector<std::string> result;
     std::istringstream iss(str);
     std::string token;
     while (iss >> token)
@@ -20,9 +20,9 @@ sjtu::vector<std::string> readtokens(const std::string& str)//把读入的语句
     return result;
 }
 
-sjtu::vector<std::string> cutstring(const std::string& str)//把字符串按照|切片
+std::vector<std::string> cutstring(const std::string& str)//把字符串按照|切片
 {
-    sjtu::vector<std::string> subStrings;
+    std::vector<std::string> subStrings;
     std::stringstream ss(str);
     std::string token;
     while (std::getline(ss, token, '|'))
@@ -117,5 +117,11 @@ std::string timeshow(int t)
     s+='0'+m/10;
     s+='0'+m%10;
     return s;
+}
+
+int stamp(std::string& s)//读取时间戳内时间
+{
+    std::string tmp=s.substr(1,s.size()-2);
+    return stringToInteger(tmp);
 }
 #endif //CODE_SENTENCESLICE_H

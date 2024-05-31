@@ -42,14 +42,35 @@ struct User
 struct Order
 {
     char trainID[25]{};
+    long index;
     char start[35]{};
     char end[35]{};
     int lday,aday;//出发日期和到达日期
     int ltime,atime;//出发时间和到达时间
     int price;
     int number;
-    int state;//订单时间戳
+    int state;//订单状态，0-suceess,1-pending,2-refunded
     int timestamp;//下单时间戳
+    int rank1,rank2;
+
+    Order()=default;
+    Order(char i[],char f[],char t[],int ld,int ad,int lt,int at,int p,int n,int s,int time,long ind,int r1,int r2)
+    {
+        strcpy(trainID,i);
+        strcpy(start,f);
+        strcpy(end,t);
+        lday=ld;
+        aday=ad;
+        ltime=lt;
+        atime=at;
+        price=p;
+        number=n;
+        state=s;
+        timestamp=time;
+        index=ind;
+        rank1=r1;
+        rank2=r2;
+    }
 
     bool operator<(const Order& obj)const
     {
@@ -59,10 +80,14 @@ struct Order
     {
         return timestamp<obj.timestamp;
     }
-
-    friend std::ostream& operator<<(std::ostream& os, const User& user)
+    bool operator==(const Order& obj)const
     {
-        os << user.username << ' ' << user.name << ' ' << user.mailAdder << ' ' << user.privilege << '\n';
+        return timestamp==obj.timestamp;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Order& order)
+    {
+        os<<order.trainID<<' '<<order.start<<' '<<dayshow(order.lday)<<' '<<timeshow(order.ltime)<<" -> "<<order.end<<' '<<dayshow(order.aday)<<' '<<timeshow(order.atime)<<' '<<order.price<<' '<<order.number<<std::endl;
         return os;
     }
 };
@@ -71,6 +96,7 @@ extern sjtu::map<mystr<25>,User>userstack;//登录列表
 
 class Userinf
 {
+    friend class Traininf;
 private:
     BPTree<25,User>userlist;//以username为关键字，内容为User的所有信息
     BPTree<25,Order>orderlist;//以username为关键字，内容为订单的所有信息
@@ -286,7 +312,28 @@ public:
 
     void queryorder(char u[])
     {
-
+        if(userstack.count(mystr<25>(u))>0)//-u已登录
+        {
+            std::vector<Order> orders=orderlist.Findval(u);
+            std::cout<<orders.size()<<std::endl;
+            for(int i=0;i<orders.size();i++)
+            {
+                if(orders[i].state==0)//success
+                {
+                    std::cout<<"[success] "<<orders[i];
+                }
+                else if(orders[i].state==1)//pending
+                {
+                    std::cout<<"[pending] "<<orders[i];
+                }
+                else//refunded
+                {
+                    std::cout<<"[refunded] "<<orders[i];
+                }
+            }
+            return;
+        }
+        std::cout<<"-1\n";
     }
 
     void refund(char u[],int n=1)

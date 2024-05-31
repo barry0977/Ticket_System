@@ -6,8 +6,10 @@
 #define CODE_TRAINSYSTEM_H
 #include "BPlusTree.h"
 #include "mysort.h"
+#include "usersystem.h"
 
 extern sjtu::map<mystr<25>,User>userstack;//登录列表
+extern Userinf userinf;
 struct Train
 {
     char trainID[25]{};
@@ -65,7 +67,7 @@ struct Transferans
         seat2=s2;
     }
 
-    Transferans operator=(const Transferans& obj)
+    Transferans& operator=(const Transferans& obj)
     {
         if(this==&obj)
         {
@@ -194,6 +196,28 @@ struct stationinf
     {
         return strcmp(trainID,obj.trainID) > 0;
     }
+    stationinf()=default;
+    stationinf(const stationinf& obj)
+    {
+        strcpy(trainID,obj.trainID);
+        order=obj.order;
+        cost=obj.cost;
+        begindate=obj.begindate;
+        enddate=obj.enddate;
+        arrivetime=obj.arrivetime;
+        leavetime=obj.leavetime;
+    }
+    stationinf operator=(const stationinf& obj)
+    {
+        strcpy(trainID,obj.trainID);
+        order=obj.order;
+        cost=obj.cost;
+        begindate=obj.begindate;
+        enddate=obj.enddate;
+        arrivetime=obj.arrivetime;
+        leavetime=obj.leavetime;
+        return *this;
+    }
     friend std::ostream& operator<<(std::ostream& os, const stationinf& obj)
     {
         os << obj.trainID<< '\n';
@@ -204,14 +228,36 @@ struct waitinf//记录需要候补的信息
 {
     char username[25]{};
     char trainID[25]{};
-    int date;
-    char start[35]{};
-    char end[35]{};
+    long index;
+    int rank1,rank2;//f和t是第几站
     int number;
+    int timestamp;//下单时间
+
+    waitinf()=default;
+    waitinf(char u[],char i[],int ind,int r1,int r2,int n,int t)
+    {
+        strcpy(username,u);
+        strcpy(trainID,i);
+        index=ind;
+        rank1=r1;
+        rank2=r2;
+        number=n;
+        timestamp=t;
+    }
+
+    bool operator<(const waitinf& obj)const
+    {
+        return timestamp<obj.timestamp;
+    }
+    bool operator==(const waitinf& obj)const
+    {
+        return timestamp==obj.timestamp;
+    }
 };
 
 class Traininf
 {
+    friend class Userinf;
 private:
     std::fstream trainfile;//储存火车信息的文件
     std::fstream ticketfile;//储存车票信息的文件
@@ -295,7 +341,7 @@ public:
             strcpy(tmp.trainID,i);
             tmp.stationNum=n;
             tmp.seatNum=m;
-            sjtu::vector<std::string> _s= cutstring(s),_p= cutstring(p),_t= cutstring(t),_o= cutstring(o),_d= cutstring(d);
+            std::vector<std::string> _s= cutstring(s),_p= cutstring(p),_t= cutstring(t),_o= cutstring(o),_d= cutstring(d);
             for(int i=0;i<n;i++)
             {
                 tmp.stations[i]=mystr<35>(_s[i]);
@@ -326,7 +372,7 @@ public:
     {
         if(releasedtrain.Findval(i).empty())//未发布
         {
-            sjtu::vector<long>num=trainlist.Findval(i);
+            std::vector<long>num=trainlist.Findval(i);
             if(!num.empty())
             {
                 trainlist.Delete(i,num[0]);
@@ -340,7 +386,7 @@ public:
     {
         if(releasedtrain.Findval(i).empty())
         {
-            sjtu::vector<long>num=trainlist.Findval(i);
+            std::vector<long>num=trainlist.Findval(i);
             if(!num.empty())//找到列车
             {
                 releasedtrain.Insert(i,num[0]);
@@ -384,7 +430,7 @@ public:
         return -1;
     }
 
-    int querytrain(char i[],std::string& d)
+    void querytrain(char i[],std::string& d)
     {
         Train res;
         int date= daytrans(d);
@@ -476,19 +522,20 @@ public:
                         lt=at+res.stopoverTimes[j];
                     }
                 }
-                return 0;
+                return;
             }
         }
-        return -1;
+        std::cout<<"-1\n";
+        return;
     }
 
     void queryticket(char s[],char t[],std::string d,int order=0)//order代表排序的标准，0为
     {
         int num=0;
-        sjtu::vector<Queryans>querylist;
+        std::vector<Queryans>querylist;
         int date= daytrans(d);
-        sjtu::vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
-        sjtu::vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
+        std::vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
+        std::vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
         int l1=train1.size(),l2=train2.size();
         for(int i=0;i<l1;i++)
         {
@@ -554,8 +601,8 @@ public:
         bool find=false;//是否找到
         Transferans res;
         int date= daytrans(d);
-        sjtu::vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
-        sjtu::vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
+        std::vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
+        std::vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
         int l1=train1.size(),l2=train2.size();
         for(int i=0;i<l1;i++)
         {
@@ -657,14 +704,172 @@ public:
         }
     }
 
-    void buyticket(char u[],char i[],std::string d,int n,char f[],char t[],bool q)
+    void buyticket(char u[],char i[],std::string d,int n,char f[],char t[],bool q,int time)
     {
-
+        if(userstack.count(mystr<25>(u))>0&&!releasedtrain.Findval(i).empty())//-u 已登录，且购买的车次必须已经被 release
+        {
+            Train target;
+            rtrain(target,trainlist.Findval(i)[0]);
+            if(n<=target.seatNum)//小于最大票数
+            {
+                int lt=0,at=target.travelTimes[0],c=0,day,r1,r2;
+                bool begin=false;//是否找到起点站
+                if(strcmp(f,target.stations[0].value)==0)//如果起点站就是-f
+                {
+                    day=daytrans(d);
+                    r1=0;
+                    begin=true;
+                }
+                for(int j=1;j<target.stationNum;j++)
+                {
+                    if(!begin)
+                    {
+                        lt+=target.travelTimes[j-1]+target.stopoverTimes[j-1];
+                    }
+                    if(begin)
+                    {
+                        c+=target.prices[j-1];
+                    }
+                    if(strcmp(target.stations[j].value,f)==0)//找到站-f
+                    {
+                        day= daytrans(d)-lt/1440;
+                        r1=j;
+                        begin=true;
+                    }
+                    if(strcmp(target.stations[j].value,t)==0)//找到站-t
+                    {
+                        r2=j;
+                        break;
+                    }
+                    at+=target.stopoverTimes[j-1]+target.travelTimes[j];
+                }
+                if(day>=target.begindate&&day<=target.enddate)//在售票日期
+                {
+                    int num=target.seatNum;
+                    Ticket obj;
+                    long place=ticketlist.Findval(i)[0];
+                    rticket(obj,place);
+                    for(int j=r1;j<r2;j++)
+                    {
+                        num=std::min(num,obj.ticketleft[j]);
+                    }
+                    if(num>=n)//能成功买票
+                    {
+                        for(int j=r1;j<r2;j++)
+                        {
+                            obj.ticketleft[j]-=n;
+                        }
+                        wticket(obj,place);//把修改的车票信息写回去
+                        std::cout<<c*n<<std::endl;
+                        Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,0,time,place,r1,r2);
+                        userinf.orderlist.Insert(u,tmp);
+                        return;
+                    }
+                    else if(q)//接受候补
+                    {
+                        waitinf towrite(u,i,place,r1,r2,n,time);
+                        waitlist.Insert(i,towrite);
+                        std::cout<<"queue\n";
+                        Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,1,time,place,r1,r2);
+                        userinf.orderlist.Insert(u,tmp);
+                        return;
+                    }
+                }
+            }
+        }
+        std::cout<<"-1"<<std::endl;
     }
-
-    void refundticket(char i[],char d[],int n,char f[],char t[])
+// buy_ticket草稿
+//            std::vector<stationinf>possibletrain=stationlist.Findval(f);
+//            for(int j=0;j<possibletrain.size();j++)
+//            {
+//                if(strcmp(i,possibletrain[j].trainID)==0)//找到这辆车
+//                {
+//                    stationinf objtrain=possibletrain[j];
+//                    int startday= daytrans(d)-objtrain.leavetime/1440;//从起点站出发的日期
+//                    if(startday>=objtrain.begindate&&startday<=objtrain.enddate)//在售票日期内
+//                    {
+//                        long index=ticketlist.Findval(objtrain.trainID)[startday-objtrain.begindate];
+//                        Ticket objticket;
+//                        rticket(objticket,index);
+//                    }
+//                }
+//            }
+    int refundticket(char u[],int n,int time)
     {
-
+        if(userstack.count(mystr<25>(u))>0)//-u 已登录
+        {
+            std::vector<Order> orders=userinf.orderlist.Findval(u);
+            if(n<=orders.size())
+            {
+                Order obj=orders[n-1];
+                if(obj.state==0)
+                {
+                    userinf.orderlist.Delete(u,obj);
+                    obj.state=2;
+                    obj.timestamp=time;
+                    userinf.orderlist.Insert(u,obj);
+                    Ticket revise;
+                    rticket(revise,obj.index);
+                    for(int i=obj.rank1;i<obj.rank2;i++)
+                    {
+                        revise.ticketleft[i]+=obj.number;
+                    }
+                    if(!waitlist.Findval(obj.trainID).empty())//有候补订单
+                    {
+                        std::vector<waitinf> waits=waitlist.Findval(obj.trainID);
+                        for(int j=0;j<waits.size();j++)
+                        {
+                            if(waits[j].index==obj.index)//是同一辆车
+                            {
+                                int left=revise.seatNum;
+                                for(int k=waits[j].rank1;k<=waits[j].rank2;k++)
+                                {
+                                    left=std::min(left,revise.ticketleft[k]);
+                                }
+                                if(left>=waits[j].number)//能满足
+                                {
+                                    for(int k=waits[j].rank1;k<=waits[j].rank2;k++)
+                                    {
+                                        revise.ticketleft[k]-=waits[j].number;
+                                    }
+                                    waitlist.Delete(obj.trainID,waits[j]);//删除候补信息
+                                    std::vector<Order>orderinf=userinf.orderlist.Findval(waits[j].username);
+                                    for(int x=0;x<orderinf.size();x++)
+                                    {
+                                        if(orderinf[x].timestamp==waits[j].timestamp)
+                                        {
+                                            userinf.orderlist.Delete(waits[j].username,orderinf[x]);
+                                            orderinf[x].state=0;
+                                            userinf.orderlist.Insert(waits[j].username,orderinf[x]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    wticket(revise,obj.index);
+                }
+                else if(obj.state==1)
+                {
+                    std::vector<waitinf> waits=waitlist.Findval(obj.trainID);
+                    for(int j=0;j<waits.size();j++)
+                    {
+                        if(waits[j].timestamp==obj.timestamp)
+                        {
+                            waitlist.Delete(obj.trainID,waits[j]);
+                            break;
+                        }
+                    }
+                    userinf.orderlist.Delete(u,obj);
+                    obj.state=2;
+                    obj.timestamp=time;
+                    userinf.orderlist.Insert(u,obj);
+                }
+                return 0;
+            }
+        }
+        return -1;
     }
 };
 #endif //CODE_TRAINSYSTEM_H
