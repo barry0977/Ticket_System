@@ -104,6 +104,7 @@ public:
     Userinf()
     {
         userlist.initial("userinfo");
+        orderlist.initial("orderinfo");
     }
 
     int adduser(char c[],char u[],char p[],char n[],char m[],int g)

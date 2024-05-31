@@ -9,7 +9,7 @@ Userinf userinf;
 Traininf traininf;
 int main()
 {
-//    freopen("in.txt","r",stdin);
+    freopen("in.txt","r",stdin);
 //    freopen("out.txt","w",stdout);
     std::string input;
     while(1)
@@ -313,7 +313,7 @@ int main()
                 {
                     n= stringToInteger(token[i+1]);
                 }
-                else if(token[i]=="-p")
+                else if(token[i]=="-q")
                 {
                     if(token[i+1]=="true")
                     {

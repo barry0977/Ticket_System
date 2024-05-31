@@ -324,8 +324,10 @@ public:
     {
         ini();
         trainlist.initial("traininfo");
+        ticketlist.initial("ticketinfo");
         releasedtrain.initial("releaseinfo");
-
+        stationlist.initial("stationinfo");
+        waitlist.initial("waitinfo");
     }
 
     ~Traininf()
@@ -342,26 +344,27 @@ public:
             tmp.stationNum=n;
             tmp.seatNum=m;
             std::vector<std::string> _s= cutstring(s),_p= cutstring(p),_t= cutstring(t),_o= cutstring(o),_d= cutstring(d);
-            for(int i=0;i<n;i++)
+            for(int j=0;j<n;j++)
             {
-                tmp.stations[i]=mystr<35>(_s[i]);
+                tmp.stations[j]=mystr<35>(_s[j]);
             }
             tmp.startTime= timetrans(x);
-            for(int i=0;i<n-1;i++)
+            for(int j=0;j<n-1;j++)
             {
-                tmp.prices[i]= stringToInteger(_p[i]);
+                tmp.prices[j]= stringToInteger(_p[j]);
+                tmp.travelTimes[j]= stringToInteger(_t[j]);
             }
             tmp.begindate= daytrans(_d[0]);
             tmp.enddate= daytrans(_d[1]);
             if(n>2)
             {
-                for(int i=0;i<n-1;i++)
+                for(int j=0;j<n-2;j++)
                 {
-                    tmp.stopoverTimes[i]= stringToInteger(_o[i]);
+                    tmp.stopoverTimes[j]= stringToInteger(_o[j]);
                 }
             }
             tmp.type=y;
-            int index= atrain(tmp);
+            long index= atrain(tmp);
             trainlist.Insert(i,index);
             return 0;
         }
@@ -413,7 +416,7 @@ public:
                 int cost=0,at=res.startTime,lt=at;
                 for(int j=0;j<res.stationNum;j++)
                 {
-                    stmp.order=j+1;
+                    stmp.order=j;
                     stmp.cost=cost;
                     stmp.arrivetime=at;
                     stmp.leavetime=lt;
@@ -453,12 +456,7 @@ public:
                         }
                         else
                         {
-                            if(at>=1440)
-                            {
-                                at-=1440;
-                                date++;
-                            }
-                            std::cout<<dayshow(date)<<" "<<timeshow(at)<<" ";
+                            std::cout<<dayshow(date+at/1440)<<" "<<timeshow(at%1440)<<" ";
                         }
                         std::cout<<"-> ";
                         if(j==res.stationNum-1)
@@ -467,15 +465,10 @@ public:
                         }
                         else
                         {
-                            if(at>=1440)
-                            {
-                                at-=1440;
-                                date++;
-                            }
-                            std::cout<<dayshow(date)<<" "<<timeshow(lt)<<" "<<cost<<" "<<res.seatNum<<std::endl;
+                            std::cout<<dayshow(date+lt/1440)<<" "<<timeshow(lt%1440)<<" "<<cost<<" "<<res.seatNum<<std::endl;
                         }
                         cost+=res.prices[j];
-                        at+=res.travelTimes[j];
+                        at=lt+res.travelTimes[j];
                         lt=at+res.stopoverTimes[j];
                     }
                 }
@@ -496,12 +489,7 @@ public:
                         }
                         else
                         {
-                            if(at>=1440)
-                            {
-                                at-=1440;
-                                date++;
-                            }
-                            std::cout<<dayshow(date)<<" "<<timeshow(at)<<" ";
+                            std::cout<<dayshow(date+at/1440)<<" "<<timeshow(at%1440)<<" ";
                         }
                         std::cout<<"-> ";
                         if(j==res.stationNum-1)
@@ -510,15 +498,10 @@ public:
                         }
                         else
                         {
-                            if(at>=1440)
-                            {
-                                at-=1440;
-                                date++;
-                            }
-                            std::cout<<dayshow(date)<<" "<<timeshow(lt)<<" "<<cost<<" "<<ans.ticketleft[j]<<std::endl;
+                            std::cout<<dayshow(date+lt/1440)<<" "<<timeshow(lt%1440)<<" "<<cost<<" "<<ans.ticketleft[j]<<std::endl;
                         }
                         cost+=res.prices[j];
-                        at+=res.travelTimes[j];
+                        at=lt+res.travelTimes[j];
                         lt=at+res.stopoverTimes[j];
                     }
                 }
@@ -547,6 +530,7 @@ public:
                 {
                     if(strcmp(train1[i].trainID,train2[j].trainID)==0)//如果找到,其中train1[i]为该车在出发站信息，train2[j]为该车在到达站信息
                     {
+                        num++;
                         Queryans tmp;
                         char trainID[25]{};
                         strcpy(trainID,train1[i].trainID);
@@ -558,17 +542,10 @@ public:
                         rticket(res,ticketlist.Findval(trainID)[place]);
                         tmp.price=train2[j].cost-train1[j].cost;//票价
                         tmp.time=train2[j].arrivetime-train1[i].leavetime;//时间
-                        int seat=-1;
+                        int seat=res.seatNum;
                         for(int k=train1[i].order;k<train2[j].order;k++)
                         {
-                            if(seat<0)
-                            {
-                                seat=res.ticketleft[k];
-                            }
-                            else
-                            {
-                                seat=std::min(seat,res.ticketleft[k]);
-                            }
+                            seat=std::min(seat,res.ticketleft[k]);
                         }
                         tmp.seat=seat;//最大剩余座位
                         tmp.fday=date;//出发日
@@ -712,37 +689,28 @@ public:
             rtrain(target,trainlist.Findval(i)[0]);
             if(n<=target.seatNum)//小于最大票数
             {
-                int lt=0,at=target.travelTimes[0],c=0,day,r1,r2;
-                bool begin=false;//是否找到起点站
-                if(strcmp(f,target.stations[0].value)==0)//如果起点站就是-f
+                int day,r1,r2,at,lt;
+                int c=0,att=target.startTime,ltt=att,c1=0;
+                for(int j=0;j<target.stationNum;j++)
                 {
-                    day=daytrans(d);
-                    r1=0;
-                    begin=true;
-                }
-                for(int j=1;j<target.stationNum;j++)
-                {
-                    if(!begin)
+                    if(strcmp(f,target.stations[j].value)==0)//找到起点站
                     {
-                        lt+=target.travelTimes[j-1]+target.stopoverTimes[j-1];
-                    }
-                    if(begin)
-                    {
-                        c+=target.prices[j-1];
-                    }
-                    if(strcmp(target.stations[j].value,f)==0)//找到站-f
-                    {
-                        day= daytrans(d)-lt/1440;
+                        lt=ltt;
                         r1=j;
-                        begin=true;
+                        c1=c;
                     }
-                    if(strcmp(target.stations[j].value,t)==0)//找到站-t
+                    if(strcmp(t,target.stations[j].value)==0)//找到终点站
                     {
+                        at=att;
                         r2=j;
+                        c-=c1;
                         break;
                     }
-                    at+=target.stopoverTimes[j-1]+target.travelTimes[j];
+                    c+=target.prices[j];
+                    att=ltt+target.travelTimes[j];
+                    ltt=att+target.stopoverTimes[j];
                 }
+                day= daytrans(d)-lt/1440;
                 if(day>=target.begindate&&day<=target.enddate)//在售票日期
                 {
                     int num=target.seatNum;
