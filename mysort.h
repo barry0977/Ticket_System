@@ -6,9 +6,9 @@
 #define CODE_MYSORT_H
 #include "myvector.h"
 template<class T>
-void merge(sjtu::vector<T>&a,int low,int high,int mid,bool (*f)(const T&,const T&))
+void merge(vector<T>&a,int low,int high,int mid,bool (*f)(const T&,const T&))
 {
-    sjtu::vector<T>b,c;
+    vector<T>b,c;
     for(int i=0;i<=mid-low;i++)
     {
         b.push_back(a[low+i]);
@@ -43,7 +43,7 @@ void merge(sjtu::vector<T>&a,int low,int high,int mid,bool (*f)(const T&,const T
 }
 
 template<class T>
-void mergesort(sjtu::vector<T>&a,int low,int high,bool (*f)(const T&,const T&))
+void mergesort(vector<T>&a,int low,int high,bool (*f)(const T&,const T&))
 {
     if(low<high)
     {

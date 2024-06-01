@@ -343,7 +343,7 @@ public:
             strcpy(tmp.trainID,i);
             tmp.stationNum=n;
             tmp.seatNum=m;
-            sjtu::vector<std::string> _s= cutstring(s),_p= cutstring(p),_t= cutstring(t),_o= cutstring(o),_d= cutstring(d);
+            vector<std::string> _s= cutstring(s),_p= cutstring(p),_t= cutstring(t),_o= cutstring(o),_d= cutstring(d);
             for(int j=0;j<n;j++)
             {
                 tmp.stations[j]=mystr<35>(_s[j]);
@@ -375,7 +375,7 @@ public:
     {
         if(releasedtrain.Findval(i).empty())//未发布
         {
-            sjtu::vector<long>num=trainlist.Findval(i);
+            vector<long>num=trainlist.Findval(i);
             if(!num.empty())
             {
                 trainlist.Delete(i,num[0]);
@@ -389,7 +389,7 @@ public:
     {
         if(releasedtrain.Findval(i).empty())
         {
-            sjtu::vector<long>num=trainlist.Findval(i);
+            vector<long>num=trainlist.Findval(i);
             if(!num.empty())//找到列车
             {
                 releasedtrain.Insert(i,num[0]);
@@ -515,10 +515,10 @@ public:
     void queryticket(char s[],char t[],std::string d,int order=0)//order代表排序的标准，0为
     {
         int num=0;
-        sjtu::vector<Queryans>querylist;
+        vector<Queryans>querylist;
         int date= daytrans(d);
-        sjtu::vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
-        sjtu::vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
+        vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
+        vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
         int l1=train1.size(),l2=train2.size();
         for(int i=0;i<l1;i++)
         {
@@ -578,8 +578,8 @@ public:
         bool find=false;//是否找到
         Transferans res;
         int date= daytrans(d);
-        sjtu::vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
-        sjtu::vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
+        vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
+        vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
         int l1=train1.size(),l2=train2.size();
         for(int i=0;i<l1;i++)
         {
@@ -755,7 +755,7 @@ public:
         std::cout<<"-1"<<std::endl;
     }
 // buy_ticket草稿
-//            sjtu::vector<stationinf>possibletrain=stationlist.Findval(f);
+//            vector<stationinf>possibletrain=stationlist.Findval(f);
 //            for(int j=0;j<possibletrain.size();j++)
 //            {
 //                if(strcmp(i,possibletrain[j].trainID)==0)//找到这辆车
@@ -774,7 +774,7 @@ public:
     {
         if(userstack.count(mystr<25>(u))>0)//-u 已登录
         {
-            sjtu::vector<Order> orders=userinf.orderlist.Findval(u);
+            vector<Order> orders=userinf.orderlist.Findval(u);
             if(n<=orders.size())
             {
                 Order obj=orders[n-1];
@@ -791,7 +791,7 @@ public:
                     }
                     if(!waitlist.Findval(obj.trainID).empty())//有候补订单
                     {
-                        sjtu::vector<waitinf> waits=waitlist.Findval(obj.trainID);
+                        vector<waitinf> waits=waitlist.Findval(obj.trainID);
                         for(int j=0;j<waits.size();j++)
                         {
                             if(waits[j].index==obj.index)//是同一辆车
@@ -808,7 +808,7 @@ public:
                                         revise.ticketleft[k]-=waits[j].number;
                                     }
                                     waitlist.Delete(obj.trainID,waits[j]);//删除候补信息
-                                    sjtu::vector<Order>orderinf=userinf.orderlist.Findval(waits[j].username);
+                                    vector<Order>orderinf=userinf.orderlist.Findval(waits[j].username);
                                     for(int x=0;x<orderinf.size();x++)
                                     {
                                         if(orderinf[x].timestamp==waits[j].timestamp)
@@ -826,7 +826,7 @@ public:
                 }
                 else if(obj.state==1)
                 {
-                    sjtu::vector<waitinf> waits=waitlist.Findval(obj.trainID);
+                    vector<waitinf> waits=waitlist.Findval(obj.trainID);
                     for(int j=0;j<waits.size();j++)
                     {
                         if(waits[j].timestamp==obj.timestamp)

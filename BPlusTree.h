@@ -798,9 +798,9 @@ private:
         }
     }
 
-    sjtu::vector<VALUE> findval(const int cur_index, char obj[])
+    vector<VALUE> findval(const int cur_index, char obj[])
     {
-        sjtu::vector<VALUE> ans;
+        vector<VALUE> ans;
         node cur;
         readnode(cur, cur_index);
         int min = 0, max = cur.keynum - 1, place = -1;
@@ -994,7 +994,7 @@ public:
         find(first.rootindex, obj);
     }
 
-    sjtu::vector<VALUE> Findval(char obj[])
+    vector<VALUE> Findval(char obj[])
     {
         get_first(first);
         return findval(first.rootindex,obj);

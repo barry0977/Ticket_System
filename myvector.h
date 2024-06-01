@@ -548,4 +548,13 @@ namespace sjtu
 
 }
 
+
+//template<typename T>
+//using vector = std::vector<T>;
+
+template<typename T>
+using vector = sjtu::vector<T>;
+
+
+
 #endif

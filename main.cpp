@@ -9,13 +9,13 @@ Userinf userinf;
 Traininf traininf;
 int main()
 {
-//    freopen("1.in","r",stdin);
-//    freopen("out.txt","w",stdout);
+    freopen("2.in","r",stdin);
+    freopen("out.txt","w",stdout);
     std::string input;
     while(1)
     {
         std::getline(std::cin,input);
-        sjtu::vector<std::string> token= readtokens(input);
+        vector<std::string> token= readtokens(input);
         int l=token.size();
         std::string timestamp=token[0];
         if(token[1]=="add_user")
@@ -174,7 +174,7 @@ int main()
                 }
             }
             std::cout<<token[0]<<" ";
-//            std::cout<<traininf.addtrain(id,n,m,s,p,x,t,o,d,y)<<std::endl;
+            std::cout<<traininf.addtrain(id,n,m,s,p,x,t,o,d,y)<<std::endl;
         }
         else if(token[1]=="delete_train")
         {
@@ -187,7 +187,7 @@ int main()
                 }
             }
             std::cout<<token[0]<<" ";
-//            std::cout<<traininf.deletetrain(id)<<std::endl;
+            std::cout<<traininf.deletetrain(id)<<std::endl;
         }
         else if(token[1]=="release_train")
         {
@@ -200,7 +200,7 @@ int main()
                 }
             }
             std::cout<<token[0]<<" ";
-//            std::cout<<traininf.releasetrain(id)<<std::endl;
+            std::cout<<traininf.releasetrain(id)<<std::endl;
         }
         else if(token[1]=="query_train")
         {
@@ -218,7 +218,7 @@ int main()
                 }
             }
             std::cout<<token[0]<<" ";
-//            traininf.querytrain(id,d);
+            traininf.querytrain(id,d);
         }
         else if(token[1]=="query_ticket")
         {
@@ -248,7 +248,7 @@ int main()
                 }
             }
             std::cout<<token[0]<<" ";
-//            traininf.queryticket(s,t,d,order);
+            traininf.queryticket(s,t,d,order);
         }
         else if(token[1]=="query_transfer")
         {
@@ -278,7 +278,7 @@ int main()
                 }
             }
             std::cout<<token[0]<<" ";
-//            traininf.querytransfer(s,t,d,order);
+            traininf.querytransfer(s,t,d,order);
         }
         else if(token[1]=="buy_ticket")
         {
@@ -321,7 +321,7 @@ int main()
                 }
             }
             std::cout<<token[0]<<" ";
-//            traininf.buyticket(u,id,d,n,f,t,q, stamp(token[0]));
+            traininf.buyticket(u,id,d,n,f,t,q, stamp(token[0]));
         }
         else if(token[1]=="query_order")
         {
@@ -352,7 +352,7 @@ int main()
                 }
             }
             std::cout<<token[0]<<" ";
-//            std::cout<<traininf.refundticket(u,n, stamp(token[0]))<<std::endl;
+            std::cout<<traininf.refundticket(u,n, stamp(token[0]))<<std::endl;
         }
         else if(token[1]=="clean")
         {
