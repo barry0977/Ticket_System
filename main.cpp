@@ -9,7 +9,7 @@ Userinf userinf;
 Traininf traininf;
 int main()
 {
-    freopen("in.txt","r",stdin);
+    freopen("33.in","r",stdin);
     freopen("out.txt","w",stdout);
     std::string input;
     while(1)

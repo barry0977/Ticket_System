@@ -594,12 +594,13 @@ public:
                         Train t1,t2;//两辆火车信息
                         rtrain(t1,trainlist.Findval(train1[i].trainID)[0]);
                         rtrain(t2,trainlist.Findval(train2[j].trainID)[0]);
-                        int at1,lt1=train1[i].leavetime,at2=train2[j].arrivetime,lt2,c1=0,c2=0;
+                        int at1,lt1=train1[i].leavetime,c1=0;
                         for(int k=train1[i].order+1;k<t1.stationNum;k++)
                         {
                             at1=lt1+t1.travelTimes[k-1];//1车到站时间 #
                             lt1=at1+t1.stopoverTimes[k-1];//1车离站时间
                             c1+=t1.prices[k-1];
+                            int at2=train2[j].arrivetime,lt2,c2=0;
                             for(int l=train2[j].order-1;l>=0;l--)
                             {
                                 lt2=at2-t2.travelTimes[l];//2车离站时间#
@@ -620,24 +621,24 @@ public:
                                         int tday1=date-train1[i].leavetime/1440+at1/1440;
                                         int ftime1=train1[i].leavetime%1440;
                                         int ttime1=at1%1440;
-                                        int fday2=sday2>=t2.begindate?sday2:t2.begindate+lt2/1440;
-                                        int tday2=sday2>=t2.begindate?sday2:t2.begindate+train2[j].arrivetime/1440;
+                                        int fday2=(sday2>=t2.begindate?sday2:t2.begindate)+lt2/1440;
+                                        int tday2=(sday2>=t2.begindate?sday2:t2.begindate)+train2[j].arrivetime/1440;
                                         int ftime2=lt2%1440;
                                         int ttime2=train2[j].arrivetime%1440;
                                         int time=(tday2-fday1)*1440+ttime2-ftime1;
                                         Ticket inf1,inf2;
-                                        int place1=date-train1[i].leavetime/1440-t1.begindate,place2=sday2>=t2.begindate?sday2:t2.begindate-t2.begindate;
+                                        int place1=date-train1[i].leavetime/1440-t1.begindate,place2=(sday2>=t2.begindate?sday2:t2.begindate)-t2.begindate;
                                         long add1=ticketlist.Findval(t1.trainID)[place1],add2=ticketlist.Findval(t2.trainID)[place2];
                                         rticket(inf1,add1);
                                         rticket(inf2,add2);
-                                        int seat1=-1,seat2=-1;
+                                        int seat1=t1.seatNum,seat2=t2.seatNum;
                                         for(int a=train1[i].order;a<k;a++)
                                         {
-                                            seat1=seat1<0?inf1.ticketleft[a]:std::min(seat1,inf1.ticketleft[a]);
+                                            seat1=std::min(seat1,inf1.ticketleft[a]);
                                         }
                                         for(int a=l;a<train2[j].order;a++)
                                         {
-                                            seat2=seat2<0?inf2.ticketleft[a]:std::min(seat2,inf2.ticketleft[a]);
+                                            seat2=std::min(seat2,inf2.ticketleft[a]);
                                         }
                                         Transferans tmp(t1.trainID,t2.trainID,s,t1.stations[k].value,t,fday1,tday1,ftime1,ttime1,fday2,tday2,ftime2,ttime2,time,c1,c2,seat1,seat2);
                                         if(!find)//如果之前还没找到过
