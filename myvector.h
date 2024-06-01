@@ -27,7 +27,10 @@ namespace sjtu
             maxsize *= 2;
             T* tmp = data;
             data = alloc.allocate(maxsize);
-            memmove(data, tmp, sizeof(T) * length);
+            for(int i= 0;i<length;i++)
+            {
+                new(data+i)T(std::move(*(tmp+i)));
+            }
             alloc.deallocate(tmp, maxsize / 2);
         }
 
@@ -35,7 +38,10 @@ namespace sjtu
         {
             T* tmp = data;
             data = alloc.allocate(maxsize / 2);
-            memmove(data, tmp, sizeof(T) * length);
+            for(int i= 0;i<length;i++)
+            {
+                new(data+i)T(std::move(*(tmp+i)));
+            }
             alloc.deallocate(tmp, maxsize);
             maxsize /= 2;
         }

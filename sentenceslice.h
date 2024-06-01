@@ -8,9 +8,9 @@
 #include <iostream>
 #include "myvector.h"
 #include <vector>
-std::vector<std::string> readtokens(const std::string& str)//把读入的语句按空格切片
+sjtu::vector<std::string> readtokens(const std::string& str)//把读入的语句按空格切片
 {
-    std::vector<std::string> result;
+    sjtu::vector<std::string> result;
     std::istringstream iss(str);
     std::string token;
     while (iss >> token)
@@ -20,9 +20,9 @@ std::vector<std::string> readtokens(const std::string& str)//把读入的语句�
     return result;
 }
 
-std::vector<std::string> cutstring(const std::string& str)//把字符串按照|切片
+sjtu::vector<std::string> cutstring(const std::string& str)//把字符串按照|切片
 {
-    std::vector<std::string> subStrings;
+    sjtu::vector<std::string> subStrings;
     std::stringstream ss(str);
     std::string token;
     while (std::getline(ss, token, '|'))

@@ -320,7 +320,7 @@ public:
     {
         if(userstack.count(mystr<25>(u))>0)//-u已登录
         {
-            std::vector<Order> orders=orderlist.Findval(u);
+            sjtu::vector<Order> orders=orderlist.Findval(u);
             std::cout<<orders.size()<<std::endl;
             for(int i=0;i<orders.size();i++)
             {
