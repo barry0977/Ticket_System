@@ -118,20 +118,25 @@ public:
         {
             tmp.privilege=10;
             userlist.Insert(u,tmp);
+            return 0;
         }
         else
         {
-            tmp.privilege=g;
-            if(userlist.Findval(u).empty())
+            if(userlist.Findval(u).empty())//username不存在
             {
-                userlist.Insert(u,tmp);
-            }
-            else//如果 <username> 已经存在则注册失败
-            {
-                return -1;
+                if(userstack.count(mystr<25>(c))>0)//-c已登录
+                {
+                    User cur=userstack[mystr<25>(c)];
+                    if(cur.privilege>g)//新用户的权限低于 -c 的权限
+                    {
+                        tmp.privilege=g;
+                        userlist.Insert(u,tmp);
+                        return 0;
+                    }
+                }
             }
         }
-        return 0;
+        return -1;
     }
 
     int login(char u[],char p[])

@@ -14,7 +14,6 @@ int main()
     std::string input;
     while(1)
     {
-//        std::cout<<"enter\n";
         std::getline(std::cin,input);
         std::vector<std::string> token= readtokens(input);
         int l=token.size();
