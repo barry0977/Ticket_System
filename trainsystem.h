@@ -531,6 +531,10 @@ public:
                     {
                         begin=j;
                     }
+                    if(train2[j]>train1[i])
+                    {
+                        continue;
+                    }
                     if(strcmp(train1[i].trainID,train2[j].trainID)==0&&train1[i].order<train2[j].order)//如果找到,并且先后次序正确 其中train1[i]为该车在出发站信息，train2[j]为该车在到达站信息
                     {
                         num++;
@@ -603,14 +607,24 @@ public:
                             at1=lt1+t1.travelTimes[k-1];//1车到站时间 #
                             lt1=at1+t1.stopoverTimes[k-1];//1车离站时间
                             c1+=t1.prices[k-1];
-                            int at2=train2[j].arrivetime,lt2,c2=0;
+                            int At2[100],Lt2[100],C2[100];
+                            At2[train2[j].order]=train2[j].arrivetime;
+                            C2[train2[j].order]=0;
                             for(int l=train2[j].order-1;l>=0;l--)
                             {
-                                lt2=at2-t2.travelTimes[l];//2车离站时间#
-                                if(l>=1) at2=lt2-t2.stopoverTimes[l-1];//2车到站时间
-                                c2+=t2.prices[l];
+                                Lt2[l]=At2[l+1]-t2.travelTimes[l];//2车离站时间#
+                                if(l>=1) At2[l]=Lt2[l]-t2.stopoverTimes[l-1];//2车到站时间
+                                C2[l]=C2[l+1]+t2.prices[l];
+                            }
+//                            int at2=train2[j].arrivetime,lt2,c2=0;
+                            for(int l=train2[j].order-1;l>=0;l--)
+                            {
+//                                lt2[l]=at2[l+1]-t2.travelTimes[l];//2车离站时间#
+//                                if(l>=1) at2[l]=lt2[l]-t2.stopoverTimes[l-1];//2车到站时间
+//                                c2[l]=c2[l+1]+t2.prices[l];
                                 if(t1.stations[k]==t2.stations[l])//找到共同的中间站
                                 {
+                                    int lt2=Lt2[l],c2=C2[l];
                                     //计算1车到中转站的日期
                                     int middate=date-train1[i].leavetime/1440+at1/1440;
                                     if((at1%1440)>(lt2%1440))//如果当天1车到，2车已经离开
@@ -685,7 +699,7 @@ public:
         }
     }
 
-    void buyticket(char u[],char i[],std::string d,int n,char f[],char t[],bool q,int time)
+    void buyticket(char u[],char i[],std::string& d,int n,char f[],char t[],bool q,int time)
     {
         if(userstack.count(mystr<25>(u))>0&&!releasedtrain.Findval(i).empty())//-u 已登录，且购买的车次必须已经被 release
         {
