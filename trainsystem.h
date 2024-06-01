@@ -726,6 +726,23 @@ public:
                         for(int j=r1;j<r2;j++)
                         {
                             num=std::min(num,obj.ticketleft[j]);
+                            if(num<n)
+                            {
+                                if(q)//接受候补
+                                {
+                                    waitinf towrite(u,i,place,r1,r2,n,time);
+                                    waitlist.Insert(i,towrite);
+                                    std::cout<<"queue\n";
+                                    Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,1,time,place,r1,r2);
+                                    userinf.orderlist.Insert(u,tmp);
+                                    return;
+                                }
+                                else
+                                {
+                                    std::cout<<"-1"<<std::endl;
+                                    return;
+                                }
+                            }
                         }
                         if(num>=n)//能成功买票
                         {
@@ -736,15 +753,6 @@ public:
                             wticket(obj,place);//把修改的车票信息写回去
                             std::cout<<c*n<<std::endl;
                             Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,0,time,place,r1,r2);
-                            userinf.orderlist.Insert(u,tmp);
-                            return;
-                        }
-                        else if(q)//接受候补
-                        {
-                            waitinf towrite(u,i,place,r1,r2,n,time);
-                            waitlist.Insert(i,towrite);
-                            std::cout<<"queue\n";
-                            Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,1,time,place,r1,r2);
                             userinf.orderlist.Insert(u,tmp);
                             return;
                         }
