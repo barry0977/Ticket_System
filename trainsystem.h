@@ -619,9 +619,9 @@ public:
 //                            int at2=train2[j].arrivetime,lt2,c2=0;
                             for(int l=train2[j].order-1;l>=0;l--)
                             {
-//                                lt2[l]=at2[l+1]-t2.travelTimes[l];//2车离站时间#
-//                                if(l>=1) at2[l]=lt2[l]-t2.stopoverTimes[l-1];//2车到站时间
-//                                c2[l]=c2[l+1]+t2.prices[l];
+//                                lt2=at2-t2.travelTimes[l];//2车离站时间#
+//                                if(l>=1) at2=lt2-t2.stopoverTimes[l-1];//2车到站时间
+//                                c2=c2+t2.prices[l];
                                 if(t1.stations[k]==t2.stations[l])//找到共同的中间站
                                 {
                                     int lt2=Lt2[l],c2=C2[l];
