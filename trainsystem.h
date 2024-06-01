@@ -610,7 +610,7 @@ public:
                                 {
                                     //计算1车到中转站的日期
                                     int middate=date-train1[i].leavetime/1440+at1/1440;
-                                    if((at1%1440)>=(lt2%1440))//如果当天1车到，2车已经离开
+                                    if((at1%1440)>(lt2%1440))//如果当天1车到，2车已经离开
                                     {
                                         middate++;
                                     }
