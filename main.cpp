@@ -10,7 +10,7 @@ Traininf traininf;
 int main()
 {
     freopen("in.txt","r",stdin);
-//    freopen("out.txt","w",stdout);
+    freopen("out.txt","w",stdout);
     std::string input;
     while(1)
     {

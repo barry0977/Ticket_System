@@ -70,10 +70,19 @@ int daytrans(std::string& str)
         ans+=30;
         ans+=(str[3]-'0')*10+str[4]-'0';
     }
-    else
+    else if(str[1]=='8')
     {
         ans+=61;
         ans+=(str[3]-'0')*10+str[4]-'0';
+    }
+    else if(str[1]=='9')
+    {
+        ans+=92;
+        ans+=(str[3]-'0')*10+str[4]-'0';
+    }
+    else
+    {
+        ans=0;
     }
     return ans;
 }
@@ -96,11 +105,19 @@ std::string dayshow(int d)
         s+='0'+x;
         s+='0'+y;
     }
-    else
+    else if(d>=62&&d<=92)
     {
         d-=61;
         int x=d/10,y=d%10;
         s+="08-";
+        s+='0'+x;
+        s+='0'+y;
+    }
+    else
+    {
+        d-=92;
+        int x=d/10,y=d%10;
+        s+="09-";
         s+='0'+x;
         s+='0'+y;
     }

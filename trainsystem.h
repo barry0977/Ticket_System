@@ -424,7 +424,7 @@ public:
                     strcpy(station,res.stations[j].value);
                     stationlist.Insert(station,stmp);
                     cost+=res.prices[j];
-                    at+=res.travelTimes[j];
+                    at=lt+res.travelTimes[j];
                     lt=at+res.stopoverTimes[j];
                 }
                 return 0;
@@ -528,7 +528,7 @@ public:
             {
                 for(int j=0;j<l2;j++)
                 {
-                    if(strcmp(train1[i].trainID,train2[j].trainID)==0)//如果找到,其中train1[i]为该车在出发站信息，train2[j]为该车在到达站信息
+                    if(strcmp(train1[i].trainID,train2[j].trainID)==0&&train1[i].order<train2[j].order)//如果找到,并且先后次序正确 其中train1[i]为该车在出发站信息，train2[j]为该车在到达站信息
                     {
                         num++;
                         Queryans tmp;
@@ -540,7 +540,7 @@ public:
                         int place=date-train1[i].leavetime/1440-train1[i].begindate;//日期的次序,即起点站出发的日期减去开始售票日期
                         Ticket res;
                         rticket(res,ticketlist.Findval(trainID)[place]);
-                        tmp.price=train2[j].cost-train1[j].cost;//票价
+                        tmp.price=train2[j].cost-train1[i].cost;//票价
                         tmp.time=train2[j].arrivetime-train1[i].leavetime;//时间
                         int seat=res.seatNum;
                         for(int k=train1[i].order;k<train2[j].order;k++)
@@ -602,8 +602,8 @@ public:
                             c1+=t1.prices[k-1];
                             for(int l=train2[j].order-1;l>=0;l--)
                             {
-                                lt2=at2-t2.travelTimes[l];//2车到站时间
-                                at2=lt2-t2.stopoverTimes[l];//2车离站时间 #
+                                lt2=at2-t2.travelTimes[l];//2车离站时间#
+                                if(l>=1) at2=lt2-t2.stopoverTimes[l-1];//2车到站时间
                                 c2+=t2.prices[l];
                                 if(t1.stations[k]==t2.stations[l])//找到共同的中间站
                                 {
@@ -613,20 +613,20 @@ public:
                                     {
                                         middate++;
                                     }
-                                    int sday2=middate-lt2/1440;//2车出发日期
-                                    if(sday2>=t2.begindate&&sday2<=t2.enddate)//2车会售票，说明找到
+                                    int sday2=middate-lt2/1440;//2车最早出发日期
+                                    if(sday2<=t2.enddate)//2车会售票，说明找到(不一定正好处于售票区间，可以更早)
                                     {
                                         int fday1=date;
-                                        int tday1=date+at1/1440;
+                                        int tday1=date-train1[i].leavetime/1440+at1/1440;
                                         int ftime1=train1[i].leavetime%1440;
                                         int ttime1=at1%1440;
-                                        int fday2=sday2+lt2/1440;
-                                        int tday2=sday2+train2[j].arrivetime/1440;
+                                        int fday2=sday2>=t2.begindate?sday2:t2.begindate+lt2/1440;
+                                        int tday2=sday2>=t2.begindate?sday2:t2.begindate+train2[j].arrivetime/1440;
                                         int ftime2=lt2%1440;
                                         int ttime2=train2[j].arrivetime%1440;
                                         int time=(tday2-fday1)*1440+ttime2-ftime1;
                                         Ticket inf1,inf2;
-                                        int place1=date-train1[i].leavetime/2400-t1.begindate,place2=sday2-t2.begindate;
+                                        int place1=date-train1[i].leavetime/1440-t1.begindate,place2=sday2>=t2.begindate?sday2:t2.begindate-t2.begindate;
                                         long add1=ticketlist.Findval(t1.trainID)[place1],add2=ticketlist.Findval(t2.trainID)[place2];
                                         rticket(inf1,add1);
                                         rticket(inf2,add2);
@@ -689,18 +689,21 @@ public:
             rtrain(target,trainlist.Findval(i)[0]);
             if(n<=target.seatNum)//小于最大票数
             {
+                bool findf= false,findt=false;
                 int day,r1,r2,at,lt;
                 int c=0,att=target.startTime,ltt=att,c1=0;
                 for(int j=0;j<target.stationNum;j++)
                 {
                     if(strcmp(f,target.stations[j].value)==0)//找到起点站
                     {
+                        findf=1;
                         lt=ltt;
                         r1=j;
                         c1=c;
                     }
                     if(strcmp(t,target.stations[j].value)==0)//找到终点站
                     {
+                        findt=1;
                         at=att;
                         r2=j;
                         c-=c1;
@@ -711,36 +714,39 @@ public:
                     ltt=att+target.stopoverTimes[j];
                 }
                 day= daytrans(d)-lt/1440;
-                if(day>=target.begindate&&day<=target.enddate)//在售票日期
+                if(findf&&findt)
                 {
-                    int num=target.seatNum;
-                    Ticket obj;
-                    long place=ticketlist.Findval(i)[0];
-                    rticket(obj,place);
-                    for(int j=r1;j<r2;j++)
+                    if(day>=target.begindate&&day<=target.enddate)//在售票日期
                     {
-                        num=std::min(num,obj.ticketleft[j]);
-                    }
-                    if(num>=n)//能成功买票
-                    {
+                        int num=target.seatNum;
+                        Ticket obj;
+                        long place=ticketlist.Findval(i)[day-target.begindate];
+                        rticket(obj,place);
                         for(int j=r1;j<r2;j++)
                         {
-                            obj.ticketleft[j]-=n;
+                            num=std::min(num,obj.ticketleft[j]);
                         }
-                        wticket(obj,place);//把修改的车票信息写回去
-                        std::cout<<c*n<<std::endl;
-                        Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,0,time,place,r1,r2);
-                        userinf.orderlist.Insert(u,tmp);
-                        return;
-                    }
-                    else if(q)//接受候补
-                    {
-                        waitinf towrite(u,i,place,r1,r2,n,time);
-                        waitlist.Insert(i,towrite);
-                        std::cout<<"queue\n";
-                        Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,1,time,place,r1,r2);
-                        userinf.orderlist.Insert(u,tmp);
-                        return;
+                        if(num>=n)//能成功买票
+                        {
+                            for(int j=r1;j<r2;j++)
+                            {
+                                obj.ticketleft[j]-=n;
+                            }
+                            wticket(obj,place);//把修改的车票信息写回去
+                            std::cout<<c*n<<std::endl;
+                            Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,0,time,place,r1,r2);
+                            userinf.orderlist.Insert(u,tmp);
+                            return;
+                        }
+                        else if(q)//接受候补
+                        {
+                            waitinf towrite(u,i,place,r1,r2,n,time);
+                            waitlist.Insert(i,towrite);
+                            std::cout<<"queue\n";
+                            Order tmp(i,f,t,day+lt/1440,day+at/1440,lt%1440,at%1440,c,n,1,time,place,r1,r2);
+                            userinf.orderlist.Insert(u,tmp);
+                            return;
+                        }
                     }
                 }
             }
@@ -771,11 +777,10 @@ public:
             if(n<=orders.size())
             {
                 Order obj=orders[n-1];
-                if(obj.state==0)
+                if(obj.state==0)//success
                 {
                     userinf.orderlist.Delete(u,obj);
                     obj.state=2;
-                    obj.timestamp=time;
                     userinf.orderlist.Insert(u,obj);
                     Ticket revise;
                     rticket(revise,obj.index);
@@ -831,7 +836,6 @@ public:
                     }
                     userinf.orderlist.Delete(u,obj);
                     obj.state=2;
-                    obj.timestamp=time;
                     userinf.orderlist.Insert(u,obj);
                 }
                 return 0;
