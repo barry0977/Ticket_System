@@ -528,15 +528,16 @@ public:
             {
                 for(int j=begin;j<l2;j++)
                 {
-//                    if(train2[j]<train1[i])
-//                    {
-//                        begin=j;
-//                    }
-//                    if(train2[j]>train1[i])
-//                    {
-//                        continue;
-//                    }
-                    if(strcmp(train1[i].trainID,train2[j].trainID)==0&&train1[i].order<train2[j].order)//如果找到,并且先后次序正确 其中train1[i]为该车在出发站信息，train2[j]为该车在到达站信息
+                    int result= strcmp(train1[i].trainID,train2[j].trainID);
+                    if(result>0)
+                    {
+                        begin=j;
+                    }
+                    if(result<0)
+                    {
+                        continue;
+                    }
+                    if(result==0&&train1[i].order<train2[j].order)//如果找到,并且先后次序正确 其中train1[i]为该车在出发站信息，train2[j]为该车在到达站信息
                     {
                         num++;
                         Queryans tmp;
