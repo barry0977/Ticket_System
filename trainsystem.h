@@ -802,7 +802,7 @@ public:
                                 }
                                 if(left>=waits[j].number)//能满足
                                 {
-                                    for(int k=waits[j].rank1;k<=waits[j].rank2;k++)
+                                    for(int k=waits[j].rank1;k<waits[j].rank2;k++)
                                     {
                                         revise.ticketleft[k]-=waits[j].number;
                                     }
