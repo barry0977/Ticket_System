@@ -118,7 +118,6 @@ public:
         {
             tmp.privilege=10;
             userlist.Insert(u,tmp);
-//            std::cout<<tmp.username<<" "<<tmp.privilege<<std::endl;
             return 0;
         }
         else
@@ -131,7 +130,6 @@ public:
                     if(cur.privilege>g)//新用户的权限低于 -c 的权限
                     {
                         tmp.privilege=g;
-//                        std::cout<<tmp.username<<" "<<tmp.privilege<<std::endl;
                         userlist.Insert(u,tmp);
                         return 0;
                     }
@@ -187,7 +185,6 @@ public:
                 if(userstack.count(mystr<25>(u))>0)
                 {
                     User res=userstack[mystr<25>(u)];
-//                    std::cout<<userstack[mystr<25>(c)].privilege<<" "<<res.privilege<<std::endl;
                     if(userstack[mystr<25>(c)].privilege>res.privilege)
                     {
                         std::cout<<res.username<<" "<<res.name<<" "<<res.mailAdder<<" "<<res.privilege<<std::endl;
@@ -199,7 +196,6 @@ public:
                     if(!userlist.Findval(u).empty())
                     {
                         User res=userlist.Findval(u)[0];
-//                        std::cout<<userstack[mystr<25>(c)].privilege<<" "<<res.privilege<<std::endl;
                         if(userstack[mystr<25>(c)].privilege>res.privilege)
                         {
                             std::cout<<res.username<<" "<<res.name<<" "<<res.mailAdder<<" "<<res.privilege<<std::endl;

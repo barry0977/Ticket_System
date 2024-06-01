@@ -234,7 +234,7 @@ struct waitinf//记录需要候补的信息
     int timestamp;//下单时间
 
     waitinf()=default;
-    waitinf(char u[],char i[],int ind,int r1,int r2,int n,int t)
+    waitinf(char u[],char i[],long ind,int r1,int r2,int n,int t)
     {
         strcpy(username,u);
         strcpy(trainID,i);
@@ -796,7 +796,7 @@ public:
                             if(waits[j].index==obj.index)//是同一辆车
                             {
                                 int left=revise.seatNum;
-                                for(int k=waits[j].rank1;k<=waits[j].rank2;k++)
+                                for(int k=waits[j].rank1;k<waits[j].rank2;k++)
                                 {
                                     left=std::min(left,revise.ticketleft[k]);
                                 }

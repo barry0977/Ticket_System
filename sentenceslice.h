@@ -50,7 +50,7 @@ int stringToInteger(std::string str)
     return n;
 }
 
-int timetrans(std::string& str)
+int timetrans(std::string str)
 {
     int h,m;
     h= stringToInteger(str.substr(0,2));
@@ -58,7 +58,7 @@ int timetrans(std::string& str)
     return h*60+m;
 }
 
-int daytrans(std::string& str)
+int daytrans(std::string str)
 {
     int ans=0;
     if(str[1]=='6')

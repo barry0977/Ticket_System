@@ -293,14 +293,9 @@ namespace sjtu
         }
         ~vector()
         {
-//            std::cout<<"enter ~"<<std::endl;
-//            std::cout<<"length:"<<length<<std::endl;
-//            std::cout<<data<<std::endl;
             for (int i = 0; i < length; i++)
             {
-//                std::cout<<data[i]<<std::endl;
                 data[i].~T();
-//                std::cout<<"ith:"<<i<<std::endl;
             }
             alloc.deallocate(data, maxsize);
         }
