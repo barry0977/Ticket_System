@@ -23,6 +23,7 @@ private:
 
     struct element//约70
     {
+        long long hashcode;
         char index[len];
         VALUE value;
 
