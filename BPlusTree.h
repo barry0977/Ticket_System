@@ -10,9 +10,9 @@
 #include <cstring>
 #include <vector>
 #include "myvector.h"
-const int M = 40;
-const int L = 40;
-const int poolsize = 120;
+const int M = 45;
+const int L = 50;
+const int poolsize = 100;
 template<int len, class VALUE>//len表示index字符数组的长度，VALUE表示值
 class BPTree
 {
