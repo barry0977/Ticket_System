@@ -356,7 +356,6 @@ int main()
         }
         else if(token[1]=="clean")
         {
-
         }
         else if(token[1]=="exit")
         {
