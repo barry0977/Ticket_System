@@ -12,7 +12,7 @@
 #include "myvector.h"
 const int M = 60;
 const int L = 60;
-const int poolsize = 300;
+const int poolsize = 200;
 template<int len, class VALUE>//len表示index字符数组的长度，VALUE表示值
 class BPTree
 {
