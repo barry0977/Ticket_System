@@ -823,6 +823,7 @@ public:
                         }
                     }
                     wticket(revise,obj.index);
+                    return 0;
                 }
                 else if(obj.state==1)
                 {
@@ -838,8 +839,8 @@ public:
                     userinf.orderlist.Delete(u,obj);
                     obj.state=2;
                     userinf.orderlist.Insert(u,obj);
+                    return 0;
                 }
-                return 0;
             }
         }
         return -1;
