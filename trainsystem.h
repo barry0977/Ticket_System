@@ -754,22 +754,7 @@ public:
         }
         std::cout<<"-1"<<std::endl;
     }
-// buy_ticket草稿
-//            vector<stationinf>possibletrain=stationlist.Findval(f);
-//            for(int j=0;j<possibletrain.size();j++)
-//            {
-//                if(strcmp(i,possibletrain[j].trainID)==0)//找到这辆车
-//                {
-//                    stationinf objtrain=possibletrain[j];
-//                    int startday= daytrans(d)-objtrain.leavetime/1440;//从起点站出发的日期
-//                    if(startday>=objtrain.begindate&&startday<=objtrain.enddate)//在售票日期内
-//                    {
-//                        long index=ticketlist.Findval(objtrain.trainID)[startday-objtrain.begindate];
-//                        Ticket objticket;
-//                        rticket(objticket,index);
-//                    }
-//                }
-//            }
+
     int refundticket(char u[],int n,int time)
     {
         if(userstack.count(mystr<25>(u))>0)//-u 已登录
