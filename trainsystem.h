@@ -335,7 +335,7 @@ public:
         trainfile.close();
     }
 
-    int addtrain(char i[], int n, int m,std::string s,std::string p, std::string x, std::string t, std::string o,std::string d, char y)
+    int addtrain(char i[], int n, int m,std::string& s,std::string& p, std::string& x, std::string& t, std::string& o,std::string& d, char y)
     {
         if(trainlist.Findval(i).empty())//trainID不存在
         {
@@ -512,7 +512,7 @@ public:
         return;
     }
 
-    void queryticket(char s[],char t[],std::string d,int order=0)//order代表排序的标准，0为
+    void queryticket(char s[],char t[],std::string& d,int order=0)//order代表排序的标准，0为
     {
         int num=0;
         vector<Queryans>querylist;
@@ -573,7 +573,7 @@ public:
         }
     }
 
-    void querytransfer(char s[],char t[],std::string d,int order=0)
+    void querytransfer(char s[],char t[],std::string& d,int order=0)
     {
         bool find=false;//是否找到
         Transferans res;
