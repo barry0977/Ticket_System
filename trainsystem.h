@@ -512,7 +512,7 @@ public:
         return;
     }
 
-    void queryticket(char s[],char t[],std::string& d,int order=0)//order代表排序的标准，0为
+    void queryticket(char s[],char t[],std::string& d,int order=0)//order代表排序的标准
     {
         int num=0;
         vector<Queryans>querylist;
@@ -520,14 +520,17 @@ public:
         vector<stationinf>train1=stationlist.Findval(s);//经过-s的列车
         vector<stationinf>train2=stationlist.Findval(t);//经过-t的列车
         int l1=train1.size(),l2=train2.size();
+        int begin=0;
         for(int i=0;i<l1;i++)
         {
-            int day1=train1[i].begindate+train1[i].leavetime/1440;
-            int day2=train1[i].enddate+train1[i].leavetime/1440;
-            if(date>=day1&&date<=day2)//该车在—d会售票
+            if(date>=(train1[i].begindate+train1[i].leavetime/1440)&&date<=(train1[i].enddate+train1[i].leavetime/1440))//该车在—d会售票
             {
-                for(int j=0;j<l2;j++)
+                for(int j=begin;j<l2;j++)
                 {
+                    if(train2[j]<train1[i])
+                    {
+                        begin=j;
+                    }
                     if(strcmp(train1[i].trainID,train2[j].trainID)==0&&train1[i].order<train2[j].order)//如果找到,并且先后次序正确 其中train1[i]为该车在出发站信息，train2[j]为该车在到达站信息
                     {
                         num++;
