@@ -17,7 +17,7 @@ template<int len, class VALUE>//len表示index字符数组的长度，VALUE表�
 class BPTree
 {
 private:
-    int insertnum=0;
+    int insertnum = 0;
     std::fstream file;
     std::string file_name;
 
@@ -98,7 +98,7 @@ private:
 
     struct firstnode//文件中的第一个结点，储存根结点地址和数据块头结点地址
     {
-        int insertNum=0;
+        int insertNum = 0;
         long rootindex;
         long headindex;
     }first;
@@ -351,7 +351,7 @@ private:
         while (min <= max)
         {
             int mid = (min + max) / 2;
-            if (cur.keylist[mid]<obj)
+            if (cur.keylist[mid] < obj)
             {
                 place = mid;
                 min = mid + 1;
@@ -424,7 +424,7 @@ private:
                 place = mid;
                 break;
             }
-            else if (cur.keylist[mid]<obj)
+            else if (cur.keylist[mid] < obj)
             {
                 place = mid;
                 min = mid + 1;
@@ -935,7 +935,7 @@ public:
             write_first(first);
         }
         get_first(first);
-        insertnum=first.insertNum;
+        insertnum = first.insertNum;
     }
 
     void initial(std::string FN)
@@ -960,7 +960,7 @@ public:
             write_first(first);
         }
         get_first(first);
-        insertnum=first.insertNum;
+        insertnum = first.insertNum;
     }
 
     ~BPTree()
@@ -969,7 +969,7 @@ public:
         {
             write_inf<node>(list[i].elem, list[i].address);
         }
-        first.insertNum=insertnum;
+        first.insertNum = insertnum;
         write_first(first);
         file.close();
     }
@@ -998,12 +998,12 @@ public:
     vector<VALUE> Findval(char obj[])
     {
         get_first(first);
-        return findval(first.rootindex,obj);
+        return findval(first.rootindex, obj);
     }
 
     bool isfirst()
     {
-        return insertnum==0;
+        return insertnum == 0;
     }
 };
 
@@ -1030,7 +1030,7 @@ struct mystr//用于将字符数组封装成结构体
     char* copy()
     {
         char ans[len];
-        strcpy(ans,value);
+        strcpy(ans, value);
         return ans;
     }
 

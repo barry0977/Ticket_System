@@ -27,9 +27,9 @@ namespace sjtu
             maxsize *= 2;
             T* tmp = data;
             data = alloc.allocate(maxsize);
-            for(int i= 0;i<length;i++)
+            for (int i = 0; i < length; i++)//不能直接memmove,否则可能析构函数会有问题
             {
-                new(data+i)T(std::move(*(tmp+i)));
+                new(data + i)T(std::move(*(tmp + i)));
             }
             alloc.deallocate(tmp, maxsize / 2);
         }
@@ -38,9 +38,9 @@ namespace sjtu
         {
             T* tmp = data;
             data = alloc.allocate(maxsize / 2);
-            for(int i= 0;i<length;i++)
+            for (int i = 0; i < length; i++)
             {
-                new(data+i)T(std::move(*(tmp+i)));
+                new(data + i)T(std::move(*(tmp + i)));
             }
             alloc.deallocate(tmp, maxsize);
             maxsize /= 2;
@@ -544,8 +544,6 @@ namespace sjtu
             }
         }
     };
-
-
 }
 
 
@@ -554,7 +552,5 @@ namespace sjtu
 
 template<typename T>
 using vector = sjtu::vector<T>;
-
-
 
 #endif
