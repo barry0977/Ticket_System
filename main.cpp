@@ -1,9 +1,9 @@
 #pragma GCC optimize(3,"Ofast","inline")
-#include "BPlusTree.h"
-#include "sentenceslice.h"
-#include "usersystem.h"
-#include "trainsystem.h"
-#include "mymap.h"
+#include "stl/BPlusTree.h"
+#include "src/sentenceslice.h"
+#include "src/usersystem.h"
+#include "src/trainsystem.h"
+#include "stl/mymap.h"
 sjtu::map<mystr<25>, User>userstack;//登录列表
 Userinf userinf;
 Traininf traininf;

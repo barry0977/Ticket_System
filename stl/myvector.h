@@ -1,7 +1,7 @@
 #ifndef SJTU_VECTOR_HPP
 #define SJTU_VECTOR_HPP
 
-#include "exception.h"
+#include "../src/exception.h"
 
 #include <climits>
 #include <cstddef>

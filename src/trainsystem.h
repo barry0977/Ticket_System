@@ -4,8 +4,8 @@
 
 #ifndef CODE_TRAINSYSTEM_H
 #define CODE_TRAINSYSTEM_H
-#include "BPlusTree.h"
-#include "mysort.h"
+#include "../stl/BPlusTree.h"
+#include "../stl/mysort.h"
 #include "usersystem.h"
 
 extern sjtu::map<mystr<25>, User>userstack;//登录列表

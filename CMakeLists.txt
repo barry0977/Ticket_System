@@ -4,7 +4,7 @@ project(code)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(code main.cpp
-        sentenceslice.h
-        mymap.h)
+        src/sentenceslice.h
+        stl/mymap.h)
 
 add_compile_options(-O3)

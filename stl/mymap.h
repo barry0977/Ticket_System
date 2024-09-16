@@ -7,8 +7,8 @@
 // only for std::less<T>
 #include <functional>
 #include <cstddef>
-#include "utility.h"
-#include "exception.h"
+#include "../src/utility.h"
+#include "../src/exception.h"
 
 namespace sjtu {
 
